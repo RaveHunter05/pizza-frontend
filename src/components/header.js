@@ -50,6 +50,7 @@ const Header = () => {
         .catch(error =>console.error('Error: ', error))
         .then(response=> {
             localStorage.setItem('user-pizza', response.id)
+            
         })
         
         event.preventDefault()
