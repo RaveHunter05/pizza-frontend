@@ -50,9 +50,37 @@ const Header = () => {
         .catch(error =>console.error('Error: ', error))
         .then(response=> {
             localStorage.setItem('user-pizza', response.id)
-            
         })
-        
+        .then(()=>{
+            var c = localStorage.getItem("user-pizza"); 
+            let dataOrder={
+                client_id:c
+            }
+            fetch("https://pizza-backend-paul.herokuapp.com/api/order", {
+            method: 'POST',
+            body: JSON.stringify(dataOrder),
+            headers:{
+                'Content-Type': 'application/json'
+            }
+            })
+            .then(res=>res.json())
+            .then(response=> localStorage.setItem('order', response.id))
+        })
+        .then(()=>{
+            var c = localStorage.getItem("user-pizza"); 
+            let dataCart={
+                client_id:c
+            }
+            fetch("https://pizza-backend-paul.herokuapp.com/api/cart", {
+            method: 'POST',
+            body: JSON.stringify(dataCart),
+            headers:{
+                'Content-Type': 'application/json'
+            }
+            })
+            .then(res=>res.json())
+            .then(response=> localStorage.setItem('cart', response.id))
+        })
         event.preventDefault()
     }
     return (
