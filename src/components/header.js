@@ -134,7 +134,7 @@ const Header = () => {
     }
 
     function bill(){
-        alert('hola mundo')
+        alert(`We don't have a bill yet :(`)
     }
     return (
         <div >
