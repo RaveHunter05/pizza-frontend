@@ -28,24 +28,26 @@ const Body = () => {
         // localStorage.setItem('user-pizza', 'Paul');
         // localStorage.clear();
         var c = localStorage.getItem("user-pizza"); 
-        (c==null)? alert('You cannot buy, please login first'): carrito(id) ;
+        (c==null)? alert('You cannot buy, please login first'): (quantity=='' || quantity<1 || quantity==null)? alert('Cannot buy invalid quantity'): carrito(id) ;
 
     }
 
     function carrito(id){
-        // var c = localStorage.getItem("user-pizza"); 
-        // let dataOrder={
-        //     client_id:c
-        // }
-        // fetch("https://pizza-backend-paul.herokuapp.com/api/cart_detail", {
-        // method: 'POST',
-        // body: JSON.stringify(dataOrder),
-        // headers:{
-        //     'Content-Type': 'application/json'
-        // }
-        // })
-        // .then(res=>res.json())
-        // .then(response=> localStorage.setItem('order', response.id))
+            var c = localStorage.getItem("cart"); 
+            let cartDetail={
+                cart_id:c,
+                product_id:id,
+                quantity: quantity
+            }
+            fetch("https://pizza-backend-paul.herokuapp.com/api/cart_detail", {
+            method: 'POST',
+            body: JSON.stringify(cartDetail),
+            headers:{
+                'Content-Type': 'application/json'
+            }
+            })
+            .then(res=>res.json())
+            .then(response=> alert('Added to cart :D'))
     }
 
     useEffect(()=>{
@@ -66,7 +68,7 @@ const Body = () => {
                         <h3>
                             {planets[key].name}
                         </h3>
-                        <label class="mb-2">
+                        <label className="mb-2">
                             {planets[key].description}
                         </label>
                         <span>

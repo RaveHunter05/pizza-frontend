@@ -6,6 +6,8 @@ const Header = () => {
     // Variables for user interface
     const [login, setLogin] = useState(false);
     const [log, setLog] =useState(false);
+    const [showCarts, setShowCarts]=useState(false);
+    const [cartThings, setCartThings]=useState({});
 
     // Variables for login 
     const [names, setNames] = useState();
@@ -16,11 +18,13 @@ const Header = () => {
     const [address1, setAddress1] = useState();
     const [address2, setAddress2] = useState();
 
+    // This is for get in and get out of the login div
     function loginn(){
         // localStorage.setItem('user-pizza', 'Paul');
         setLog(!log)
     }
 
+    // Logout
     function logout(){
         localStorage.clear();
         setLogin(false)
@@ -28,7 +32,7 @@ const Header = () => {
     }
 
 
-
+    // Here you handle the login, and asign some variables to local storage
     function handleLogin(event){
         let data={
             names, 
@@ -80,8 +84,57 @@ const Header = () => {
             })
             .then(res=>res.json())
             .then(response=> localStorage.setItem('cart', response.id))
+            .then(()=>{
+                alert('Successfully registered!')
+                setLog(!log)
+            })
         })
         event.preventDefault()
+    }
+
+    // Validation for open cart
+    function cart(){
+        let cart=localStorage.getItem("cart");
+        (cart)? showCart(cart) :alert("you don't have a cart yet!")
+    }
+
+    function fetchCart(cart){
+        fetch(`https://pizza-backend-paul.herokuapp.com/api/cart_detail/list/${cart}`)
+        .then(res=>res.json())
+        .catch(err=>console.error(err))
+        .then(response=>setCartThings(response[0]))
+    }
+
+    // Open and close cart div
+    function showCart(cart){
+        setShowCarts(!showCarts);
+        fetchCart(cart);
+    }
+
+    function buyThings(){
+        cartThings.map(x=>{
+            let order =localStorage.getItem("order")
+            let buy={
+                order_id:order,
+                product_id: x.product_id,
+                quantity: x.quantity,
+                subtotal: x.quantity * x.price
+            }
+            fetch("https://pizza-backend-paul.herokuapp.com/api/order_detail", {
+            method: 'POST',
+            body: JSON.stringify(buy),
+            headers:{
+                'Content-Type': 'application/json'
+            }
+            })
+            .then(res=>res.json())
+        })
+        setShowCarts(!showCarts)
+        bill()
+    }
+
+    function bill(){
+        alert('hola mundo')
     }
     return (
         <div >
@@ -101,8 +154,24 @@ const Header = () => {
                     )
                 }
                     
-                    <i className="fas fa-shopping-cart"></i>
+                    <i className="fas fa-shopping-cart" onClick={cart}></i>
                 </div>
+                { showCarts && 
+                <div className="div-cart"> 
+                    <h2> Cart </h2>
+                    <i className="far fa-window-close" onClick={()=>setShowCarts(!showCarts)}></i>
+                    <div className="div-cart-stuff">
+                        {Object.keys(cartThings).map(key=>
+                        <div className="interior-div-cart" key={cartThings[key].id}> 
+                            <img src={cartThings[key].image}></img>
+                            <span className="slug">{cartThings[key].slug}</span>
+                            <span>Quantity: {cartThings[key].quantity}</span>
+                            <span>${(cartThings[key].price * cartThings[key].quantity).toFixed(2)} or €{(cartThings[key].price * cartThings[key].quantity * 0.91).toFixed(2)} </span>
+                        </div>
+                        )}
+                    </div>
+                    <button className="btn-bleue" onClick={()=>buyThings()}>Buy</button>
+                </div>}
                 { log &&
                 <div className="form-login">
                     <form onSubmit={handleLogin}>
