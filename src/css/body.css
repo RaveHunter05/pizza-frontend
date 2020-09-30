@@ -104,3 +104,30 @@ h3,h2{
   .mb-2{
     margin-bottom:1rem;
   }
+
+  @media(max-width:680px){
+    .contenedor-componentes {
+      display: grid;
+      grid-template-columns: 100%;
+      align-items: center;
+      justify-items: center;
+      row-gap: 3rem;
+      margin-top: 6rem;
+    }
+    
+    .container {
+      padding: 1rem;
+    }
+
+    .componente {
+      max-width: 20rem;
+      border: 2px solid lightgray;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      border-radius: 15px;
+      min-height: 10rem;
+      padding: 2rem 1rem;
+      row-gap: 1rem;
+  }
+  }
